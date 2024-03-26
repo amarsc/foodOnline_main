@@ -10,6 +10,7 @@ from vendor.models import Vendor
 from .models import User, UserProfile
 from accounts.utils import detectUser, send_activation_email
 from django.core.exceptions import PermissionDenied
+from django.template.defaultfilters import slugify  
 
 #restrict the vendor from assessing the customer page
 def check_role_vendor(user):
@@ -40,8 +41,7 @@ def registeruser(request):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            user = User.objects.create_user(
-                first_name=first_name, last_name=last_name, username=username, email=email, password=password)
+            user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
             user.role = User.CUSTOMER
             user.save()
             # send verification email
@@ -64,7 +64,7 @@ def registeruser(request):
 def registerVendor(request):
     if request.user.is_authenticated:
         messages.warning(request, 'you are already logged in')
-        return redirect('myAccounnt')
+        return redirect('myAccount')
     elif request.method == 'POST':
         # if request.method == "POST":
         # Store Data
@@ -76,12 +76,13 @@ def registerVendor(request):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            user = User.objects.create_user(
-                first_name=first_name, last_name=last_name, username=username, email=email, password=password)
+            user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email, password=password)
             user.role = User.VENDOR
             user.save()
             vendor = v_form.save(commit=False)
             vendor.user = user
+            vendor_name = v_form.cleaned_data['vendor_name']
+            vendor.vendor_slug = slugify(vendor_name)+'-'+str(user.id)
             user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
