@@ -1,0 +1,13 @@
+{% autoescape off %}
+Hi {{user.first_name}}, {{is_approved }},{{ user.email }}
+
+{% if is_approved %}
+
+    Congratulations your restaurant has been approved by admin foodonline Marketplace.
+{% else %}
+    We are sorry, you are not eligible for publish food on foodOnline market place. For more details pls contact support@foodonline.com
+{% endif %}
+
+
+
+{% endautoescape %}
