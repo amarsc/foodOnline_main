@@ -3,7 +3,8 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.db.models import Prefetch
 
-from marketplace.context_processors import get_cart_counter,get_cart_amounts
+from marketplace.context_processors import get_cart_counter, get_cart_amounts
+
 from marketplace.models import Cart
 from menu.models import Category, FoodItem
 from vendor.models import Vendor
@@ -52,11 +53,10 @@ def add_to_cart(request, food_id):
                     # increase cart quantity
                     chkCart.quantity +=1
                     chkCart.save()
-                    return JsonResponse({'status':'Success','message':'Increased the cart quantity','cart_counter': get_cart_counter(request), 'qty': chkCart.quantity,'cart_amount': get_cart_amounts(request)})
+                    return JsonResponse({'status':'Success','message':'Increased the cart quantity','cart_counter': get_cart_counter(request), 'qty': chkCart.quantity, 'cart_amount': get_cart_amounts(request)})
                 except:
                     chkCart = Cart.objects.create(user=request.user, fooditem=fooditem, quantity=1)
-                    return JsonResponse({'status':'Success','message':'Added food item to the cart','cart_counter': get_cart_counter(request), 'qty': chkCart.quantity,'cart_amount': get_cart_amounts(request)})
-                
+                    return JsonResponse({'status':'Success','message':'Added food item to the cart','cart_counter': get_cart_counter(request), 'qty': chkCart.quantity, 'cart_amount': get_cart_amounts(request)})
             except:
                 return JsonResponse({'status':'Failed','message':'This food item does not exist!'})
         else:
@@ -81,7 +81,7 @@ def decrease_cart(request, food_id):
                     else:
                         chkCart.delete()
                         chkCart.quantity = 0
-                    return JsonResponse({'status':'Success','cart_counter': get_cart_counter(request), 'qty': chkCart.quantity,'cart_amount': get_cart_amounts(request)})
+                    return JsonResponse({'status':'Success','cart_counter': get_cart_counter(request), 'qty': chkCart.quantity, 'cart_amount': get_cart_amounts(request)})
                 except:
                     return JsonResponse({'status':'Failed','message':'You dont have this item in your cart!'})
             except:
@@ -95,23 +95,31 @@ def decrease_cart(request, food_id):
 def cart(request):
     cart_items = Cart.objects.filter(user=request.user).order_by('created_at')
     context = {
-        'cart_items': cart_items,
+        'cart_items':cart_items
     }
-    return render(request, 'marketplace/cart.html',context)
+    return render(request, 'marketplace/cart.html', context)    
 
-
-
-def delete_cart(request,cart_id):
+def delete_cart(request, cart_id):
     if request.user.is_authenticated:
-        if request:     
+        if request:
             try:
-                # Check if cart item exists
+                # chack if the cart item exists
                 cart_item = Cart.objects.get(user=request.user, id=cart_id)
                 if cart_item:
                     cart_item.delete()
-                    return JsonResponse({'status': 'Success', 'message': "Cart item has been deleted",'cart_counter':get_cart_counter(request),'cart_amount': get_cart_amounts(request)})
+                    return JsonResponse({'status':'Success','message':'Cart item has been deleted', 'cart_counter':get_cart_counter(request), 'cart_amount': get_cart_amounts(request)})
             except:
-                return JsonResponse({'status': 'Failed', 'message': 'Cart item not exist'})
+                return JsonResponse({'status':'Failed','message':'Cart item does not exist'})
         else:
-            return JsonResponse({'status': 'Failed', 'message': 'Invalid request'})
+            return JsonResponse({'status':'Failed','message':'Invalid request'})
+        
+
+def search(request):
+    address = request.GET['address']
+    latitude = request.GET['lat'] 
+    longitude = request.GET['lng']
+    radius = request.GET['radius']
+    r_name = request.GET['rest_name']
+    
+    return render(request,'marketplace/listings.html')
     

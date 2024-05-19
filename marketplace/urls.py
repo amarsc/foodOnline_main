@@ -1,5 +1,9 @@
-from django.urls import path
+from django.urls import path, include
+
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
+from marketplace import views as MarketplaceViews
 
 urlpatterns = [
     path('',views.marketplace, name='marketplace'),
@@ -16,4 +20,5 @@ urlpatterns = [
     
     #delete cart
     path('delete_cart/<int:cart_id>/',views.delete_cart, name='delete_cart'),
+   
 ]

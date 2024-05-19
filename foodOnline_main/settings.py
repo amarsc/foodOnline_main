@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'vendor',
     'menu',
     'marketplace',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -38,7 +39,7 @@ ROOT_URLCONF = 'foodOnline_main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,6 +82,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+	
+
+
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -104,8 +109,8 @@ EMAIL_PORT= 587#config('EMAIL_PORT', cast=int)
 EMAIL_HOST_USER= config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL="foodOnline Marketplace <prabhatidubey@outlook.com>"
-
+DEFAULT_FROM_EMAIL="foodOnline Marketplace <amarchauhan2804@gmail.com>"
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
 
